@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import useSound from 'use-sound'
 import brasao from '../../../assets/brasao_republica.png'
 import {
   UrnContainer,
@@ -17,9 +18,14 @@ import {
   VoteContainer,
   CandidateContainer,
 } from './styles'
+import finishVoteSfx from '../../../assets/finish_vote.mp3'
+import buttonClickSfx from '../../../assets/button_click.mp3'
 
 export function Urn() {
   const [currentNumber, setCurrentNumber] = useState('')
+
+  const [playFinishVoteSfx] = useSound(finishVoteSfx)
+  const [playButtonClickSfx] = useSound(buttonClickSfx)
 
   const candidates = [
     {
@@ -45,6 +51,8 @@ export function Urn() {
   function handleNumberClick(event: React.MouseEvent<HTMLButtonElement>) {
     const { value } = event.currentTarget
 
+    playButtonClickSfx()
+
     if (currentNumber.length === 0) {
       setCurrentNumber(value)
     } else if (currentNumber.length === 1) {
@@ -55,6 +63,7 @@ export function Urn() {
   }
 
   function handleEraseCurrentNumber() {
+    playButtonClickSfx()
     if (currentNumber.length !== 0) {
       setCurrentNumber('')
     }
@@ -67,7 +76,9 @@ export function Urn() {
       return
     }
 
-    console.log('Voto computado com sucesso!')
+    playFinishVoteSfx()
+    alert('Voto computado com sucesso!')
+    setCurrentNumber('')
   }
 
   function getCandidate() {
