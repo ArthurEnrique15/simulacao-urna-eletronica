@@ -23,6 +23,7 @@ import buttonClickSfx from '../../../assets/button_click.mp3'
 
 export function Urn() {
   const [currentNumber, setCurrentNumber] = useState('')
+  const [isBlankVote, setIsBlankVote] = useState(false)
 
   const [playFinishVoteSfx] = useSound(finishVoteSfx)
   const [playButtonClickSfx] = useSound(buttonClickSfx)
@@ -64,14 +65,15 @@ export function Urn() {
 
   function handleEraseCurrentNumber() {
     playButtonClickSfx()
+    setIsBlankVote(false)
     if (currentNumber.length !== 0) {
       setCurrentNumber('')
     }
   }
 
   function handleVote() {
-    if (currentNumber.length !== 2) {
-      alert('Número errado! Digite novamente')
+    if (currentNumber.length !== 2 && !isBlankVote) {
+      alert('Para confirmar é necessário digitar 2 números ou votar em BRANCO')
       setCurrentNumber('')
       return
     }
@@ -79,9 +81,23 @@ export function Urn() {
     playFinishVoteSfx()
     alert('Voto computado com sucesso!')
     setCurrentNumber('')
+    setIsBlankVote(false)
+  }
+
+  function handleBlankVote() {
+    playButtonClickSfx()
+    setIsBlankVote(true)
   }
 
   function getCandidate() {
+    if (isBlankVote) {
+      return (
+        <>
+          <h1>VOTO EM BRANCO</h1>
+        </>
+      )
+    }
+
     let candidate
 
     if (currentNumber.length === 0) {
@@ -124,7 +140,7 @@ export function Urn() {
   }
 
   function getFooter() {
-    if (currentNumber.length === 2) {
+    if (currentNumber.length === 2 || isBlankVote) {
       return (
         <>
           <p>
@@ -202,7 +218,7 @@ export function Urn() {
           </NumbersContainer>
 
           <ActionsButtonsContainer>
-            <WhiteButton>BRANCO</WhiteButton>
+            <WhiteButton onClick={handleBlankVote}>BRANCO</WhiteButton>
             <CorrectButton onClick={handleEraseCurrentNumber}>
               CORRIGE
             </CorrectButton>
