@@ -1,25 +1,26 @@
 import React, { useState } from 'react'
 import useSound from 'use-sound'
-import brasao from '../../../assets/brasao_republica.png'
+import brasilCoatOfArms from '../../assets/brasao_republica.png'
 import {
   UrnContainer,
   TitleContainer,
-  BoxContainer,
-  ActionsButtonsContainer,
+  BoxesContainer,
+  ActionButtonsContainer,
   ButtonsContainer,
   ConfirmButton,
   CorrectButton,
-  NumbersContainer,
-  WhiteButton,
+  NumberButtonsContainer,
+  BlankButton,
   ScreenContainer,
   NumberVoteContainer,
   ScreenTitleContainer,
-  FooterContainer,
+  TutorialContainer,
   VoteContainer,
-  CandidateContainer,
+  VoteInfoContainer,
+  NumberButton,
 } from './styles'
-import finishVoteSfx from '../../../assets/finish_vote.mp3'
-import buttonClickSfx from '../../../assets/button_click.mp3'
+import finishVoteSfx from '../../assets/finish_vote.mp3'
+import buttonClickSfx from '../../assets/button_click.mp3'
 
 export function Urn() {
   const [currentNumber, setCurrentNumber] = useState('')
@@ -89,7 +90,7 @@ export function Urn() {
     setIsBlankVote(true)
   }
 
-  function getCandidate() {
+  function getVoteInfo() {
     if (isBlankVote) {
       return (
         <>
@@ -98,11 +99,13 @@ export function Urn() {
       )
     }
 
-    let candidate
-
-    if (currentNumber.length === 0) {
+    if (currentNumber === '') {
       return <></>
-    } else if (currentNumber.length === 1) {
+    }
+
+    let candidate = null
+
+    if (currentNumber.length === 1) {
       candidate = candidates.find(
         (candidate) => candidate.number[0] === currentNumber,
       )
@@ -139,7 +142,7 @@ export function Urn() {
     )
   }
 
-  function getFooter() {
+  function getTutorial() {
     if (currentNumber.length === 2 || isBlankVote) {
       return (
         <>
@@ -162,11 +165,14 @@ export function Urn() {
   return (
     <UrnContainer>
       <TitleContainer>
-        <img src={brasao} alt="Brasão da República Federativa do Brasil" />
+        <img
+          src={brasilCoatOfArms}
+          alt="Brasão da República Federativa do Brasil"
+        />
         <span>JUSTIÇA ELEITORAL</span>
       </TitleContainer>
 
-      <BoxContainer>
+      <BoxesContainer>
         <ScreenContainer>
           <ScreenTitleContainer>
             <span>Digite seu voto com o teclado numérico</span>
@@ -177,55 +183,55 @@ export function Urn() {
               <button>{currentNumber[1]}</button>
             </VoteContainer>
 
-            <CandidateContainer>{getCandidate()}</CandidateContainer>
+            <VoteInfoContainer>{getVoteInfo()}</VoteInfoContainer>
           </NumberVoteContainer>
 
-          <FooterContainer>{getFooter()}</FooterContainer>
+          <TutorialContainer>{getTutorial()}</TutorialContainer>
         </ScreenContainer>
 
         <ButtonsContainer>
-          <NumbersContainer>
-            <button value="1" onClick={handleNumberClick}>
+          <NumberButtonsContainer>
+            <NumberButton value="1" onClick={handleNumberClick}>
               1
-            </button>
-            <button value="2" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="2" onClick={handleNumberClick}>
               2
-            </button>
-            <button value="3" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="3" onClick={handleNumberClick}>
               3
-            </button>
-            <button value="4" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="4" onClick={handleNumberClick}>
               4
-            </button>
-            <button value="5" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="5" onClick={handleNumberClick}>
               5
-            </button>
-            <button value="6" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="6" onClick={handleNumberClick}>
               6
-            </button>
-            <button value="7" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="7" onClick={handleNumberClick}>
               7
-            </button>
-            <button value="8" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="8" onClick={handleNumberClick}>
               8
-            </button>
-            <button value="9" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="9" onClick={handleNumberClick}>
               9
-            </button>
-            <button value="0" onClick={handleNumberClick}>
+            </NumberButton>
+            <NumberButton value="0" onClick={handleNumberClick}>
               0
-            </button>
-          </NumbersContainer>
+            </NumberButton>
+          </NumberButtonsContainer>
 
-          <ActionsButtonsContainer>
-            <WhiteButton onClick={handleBlankVote}>BRANCO</WhiteButton>
+          <ActionButtonsContainer>
+            <BlankButton onClick={handleBlankVote}>BRANCO</BlankButton>
             <CorrectButton onClick={handleEraseCurrentNumber}>
               CORRIGE
             </CorrectButton>
             <ConfirmButton onClick={handleVote}>CONFIRMA</ConfirmButton>
-          </ActionsButtonsContainer>
+          </ActionButtonsContainer>
         </ButtonsContainer>
-      </BoxContainer>
+      </BoxesContainer>
     </UrnContainer>
   )
 }

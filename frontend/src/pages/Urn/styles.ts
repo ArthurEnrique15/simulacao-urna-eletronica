@@ -97,7 +97,7 @@ export const VoteContainer = styled.div`
   }
 `
 
-export const CandidateContainer = styled.div`
+export const VoteInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -110,7 +110,7 @@ export const CandidateContainer = styled.div`
   font-size: 1.2rem;
 `
 
-export const FooterContainer = styled.div`
+export const TutorialContainer = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -121,7 +121,7 @@ export const FooterContainer = styled.div`
   font-size: 1.2rem;
 `
 
-export const BoxContainer = styled.div`
+export const BoxesContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -147,37 +147,37 @@ export const ButtonsContainer = styled.main`
   border-radius: 6px;
 `
 
-export const NumbersContainer = styled.div`
+export const NumberButtonsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-content: center;
   gap: 2rem;
+`
 
-  button {
-    width: 4rem;
-    height: 4rem;
+export const NumberButton = styled.button`
+  width: 4rem;
+  height: 4rem;
 
-    color: #ffffff;
-    background-color: ${({ theme }) => theme.black};
+  color: #ffffff;
+  background-color: ${({ theme }) => theme.black};
 
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 
-    border: 1px solid;
-    border-color: ${({ theme }) => theme['base-label']};
-    border-radius: 6px;
+  border: 1px solid;
+  border-color: ${({ theme }) => theme['base-label']};
+  border-radius: 6px;
 
-    &:last-child {
-      grid-column: 2; /* Posiciona o último número na coluna do meio */
-    }
+  &:last-child {
+    grid-column: 2; /* Posiciona o último número na coluna do meio */
+  }
 
-    &:hover {
-      cursor: pointer;
-      background-color: ${({ theme }) => theme['black-hover']};
-    }
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme['black-hover']};
   }
 `
 
-export const ActionsButtonsContainer = styled.div`
+export const ActionButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 2rem;
@@ -194,7 +194,7 @@ const ActionButton = styled.button`
   }
 `
 
-export const WhiteButton = styled(ActionButton)`
+export const BlankButton = styled(ActionButton)`
   background-color: ${({ theme }) => theme.white};
 
   &:hover {
