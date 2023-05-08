@@ -75,7 +75,6 @@ export function Urn() {
   function handleVote() {
     if (currentNumber.length !== 2 && !isBlankVote) {
       alert('Para confirmar é necessário digitar 2 números ou votar em BRANCO')
-      setCurrentNumber('')
       return
     }
 
