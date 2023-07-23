@@ -1,12 +1,14 @@
+import { User } from '../models/user'
+
 export namespace AddUserDTO {
   export type Params = {
-    userId: string
-    candidateId: string
+    email: string
+    password: string
   }
 
-  export type Result = boolean
+  export type Result = User
 }
 
 export interface IAddUser {
-  add(params: AddUserDTO.Result): Promise<AddUserDTO.Result>
+  add(params: AddUserDTO.Params): Promise<AddUserDTO.Result>
 }
