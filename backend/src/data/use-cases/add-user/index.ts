@@ -1,6 +1,6 @@
 import { IEncrypter } from '@/data/protocols/cryptography/encrypter'
-import { IAddUserRepository } from '@/data/protocols/database/add-user'
-import { IFindUserByEmailRepository } from '@/data/protocols/database/find-user-by-email'
+import { IAddUserRepository } from '@/data/protocols/database/user/add-user'
+import { IFindUserByEmailRepository } from '@/data/protocols/database/user/find-user-by-email'
 import { AddUserDTO, IAddUser } from '@/domain/use-cases/add-user'
 
 export class AddUser implements IAddUser {

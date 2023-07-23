@@ -1,8 +1,8 @@
 import { mock, MockProxy } from 'jest-mock-extended'
 
 import { IEncrypter } from '@/data/protocols/cryptography/encrypter'
-import { IAddUserRepository } from '@/data/protocols/database/add-user'
-import { IFindUserByEmailRepository } from '@/data/protocols/database/find-user-by-email'
+import { IAddUserRepository } from '@/data/protocols/database/user/add-user'
+import { IFindUserByEmailRepository } from '@/data/protocols/database/user/find-user-by-email'
 import { User } from '@/domain/models/user'
 import { AddUserDTO } from '@/domain/use-cases/add-user'
 
