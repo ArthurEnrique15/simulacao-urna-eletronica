@@ -1,5 +1,5 @@
 import { User } from '@/domain/models/user'
 
 export interface IFindUserByEmailRepository {
-  findUserByEmail(email: string): Promise<User | null>
+  findByEmail(email: string): Promise<User | null>
 }

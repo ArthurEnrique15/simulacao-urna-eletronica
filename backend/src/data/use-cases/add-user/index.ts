@@ -11,7 +11,7 @@ export class AddUser implements IAddUser {
   ) {}
 
   async add({ email, password }: AddUserDTO.Params): Promise<AddUserDTO.Result> {
-    const userAlreadyExists = await this.findUserByEmailRepository.findUserByEmail(email)
+    const userAlreadyExists = await this.findUserByEmailRepository.findByEmail(email)
 
     if (userAlreadyExists) {
       throw new Error('User already exists')

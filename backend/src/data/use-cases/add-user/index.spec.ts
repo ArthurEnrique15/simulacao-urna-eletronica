@@ -29,12 +29,12 @@ describe('AddUser', () => {
   it('should call findUserByEmailRepository', async () => {
     await sut.add(validParams)
 
-    expect(findUserByEmailRepository.findUserByEmail).toBeCalledTimes(1)
-    expect(findUserByEmailRepository.findUserByEmail).toBeCalledWith(validParams.email)
+    expect(findUserByEmailRepository.findByEmail).toBeCalledTimes(1)
+    expect(findUserByEmailRepository.findByEmail).toBeCalledWith(validParams.email)
   })
 
   it('should throw if user already exists', async () => {
-    findUserByEmailRepository.findUserByEmail.mockResolvedValueOnce({ id: 'any_id', email: '' } as User)
+    findUserByEmailRepository.findByEmail.mockResolvedValueOnce({ id: 'any_id', email: '' } as User)
 
     const promise = sut.add(validParams)
 
