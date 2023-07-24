@@ -23,6 +23,8 @@ export class AddUserVote implements IAddUserVote {
       throw new Error('Candidate not found')
     }
 
+    // TODO validar se o usuário já tem um voto
+
     const userVote = await this.addUserVoteRepository.add({ userId, candidateId })
 
     return userVote
