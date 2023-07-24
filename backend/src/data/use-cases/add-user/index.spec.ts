@@ -1,6 +1,6 @@
 import { mock, MockProxy } from 'jest-mock-extended'
 
-import { IEncrypter } from '@/data/protocols/cryptography/encrypter'
+import { IPasswordHasher } from '@/data/protocols/cryptography/password-hasher'
 import { IAddUserRepository } from '@/data/protocols/database/user/add-user'
 import { IFindUserByEmailRepository } from '@/data/protocols/database/user/find-user-by-email'
 import { User } from '@/domain/models/user'
@@ -11,14 +11,14 @@ import { AddUser } from '.'
 describe('AddUser', () => {
   let sut: AddUser
   let findUserByEmailRepository: MockProxy<IFindUserByEmailRepository>
-  let encrypter: MockProxy<IEncrypter>
+  let passwordHasher: MockProxy<IPasswordHasher>
   let addUserRepository: MockProxy<IAddUserRepository>
 
   beforeEach(() => {
     findUserByEmailRepository = mock<IFindUserByEmailRepository>()
-    encrypter = mock<IEncrypter>()
+    passwordHasher = mock<IPasswordHasher>()
     addUserRepository = mock<IAddUserRepository>()
-    sut = new AddUser(findUserByEmailRepository, encrypter, addUserRepository)
+    sut = new AddUser(findUserByEmailRepository, passwordHasher, addUserRepository)
   })
 
   const validParams: AddUserDTO.Params = {
@@ -41,15 +41,15 @@ describe('AddUser', () => {
     await expect(promise).rejects.toThrow(new Error('User already exists'))
   })
 
-  it('should call encrypter with correct password', async () => {
+  it('should call passwordHasher with correct password', async () => {
     await sut.add(validParams)
 
-    expect(encrypter.encrypt).toBeCalledTimes(1)
-    expect(encrypter.encrypt).toBeCalledWith(validParams.password)
+    expect(passwordHasher.hash).toBeCalledTimes(1)
+    expect(passwordHasher.hash).toBeCalledWith(validParams.password)
   })
 
   it('should call addUserRepository with correct values', async () => {
-    encrypter.encrypt.mockResolvedValueOnce('hashed_password')
+    passwordHasher.hash.mockResolvedValueOnce('hashed_password')
 
     await sut.add(validParams)
 

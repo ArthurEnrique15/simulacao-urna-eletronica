@@ -1,4 +1,4 @@
-import { IEncrypter } from '@/data/protocols/cryptography/encrypter'
+import { IPasswordHasher } from '@/data/protocols/cryptography/password-hasher'
 import { IAddUserRepository } from '@/data/protocols/database/user/add-user'
 import { IFindUserByEmailRepository } from '@/data/protocols/database/user/find-user-by-email'
 import { AddUserDTO, IAddUser } from '@/domain/use-cases/add-user'
@@ -6,7 +6,7 @@ import { AddUserDTO, IAddUser } from '@/domain/use-cases/add-user'
 export class AddUser implements IAddUser {
   constructor(
     private readonly findUserByEmailRepository: IFindUserByEmailRepository,
-    private readonly encrypter: IEncrypter,
+    private readonly passwordHasher: IPasswordHasher,
     private readonly addUserRepository: IAddUserRepository,
   ) {}
 
@@ -17,7 +17,7 @@ export class AddUser implements IAddUser {
       throw new Error('User already exists')
     }
 
-    const hashedPassword = await this.encrypter.encrypt(password)
+    const hashedPassword = await this.passwordHasher.hash(password)
 
     const user = await this.addUserRepository.add({ email, password: hashedPassword })
 
