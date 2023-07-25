@@ -4,9 +4,9 @@ export namespace AuthenticateUserDTO {
     password: string
   }
 
-  export type Result = boolean
+  export type Result = { token: string }
 }
 
 export interface IAuthenticateUser {
-  add(params: AuthenticateUserDTO.Result): Promise<AuthenticateUserDTO.Result>
+  authenticate(params: AuthenticateUserDTO.Params): Promise<AuthenticateUserDTO.Result>
 }
