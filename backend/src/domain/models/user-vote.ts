@@ -1,9 +1,6 @@
-import { Candidate } from './candidate'
-import { User } from './user'
-
 export type UserVote = {
   id: string
-  user: User
-  candidate: Candidate
+  userId: string
+  candidateId: string
   date: Date
 }

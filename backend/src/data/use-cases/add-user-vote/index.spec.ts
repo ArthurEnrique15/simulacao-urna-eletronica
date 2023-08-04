@@ -3,9 +3,9 @@ import { mock, MockProxy } from 'jest-mock-extended'
 import { IFindCandidateByIdRepository } from '@/data/protocols/database/candidate/find-candidate-by-id'
 import { IFindUserByIdRepository } from '@/data/protocols/database/user/find-user-by-id'
 import { IAddUserVoteRepository } from '@/data/protocols/database/user-vote/add-user-vote'
+import { IFindOneUserVoteRepository } from '@/data/protocols/database/user-vote/find-one'
 import { Candidate } from '@/domain/models/candidate'
 import { User } from '@/domain/models/user'
-import { UserVote } from '@/domain/models/user-vote'
 import { AddUserVoteDTO } from '@/domain/use-cases/add-user-vote'
 
 import { AddUserVote } from '.'
@@ -14,13 +14,20 @@ describe('AddUserVote', () => {
   let sut: AddUserVote
   let findUserByIdRepository: MockProxy<IFindUserByIdRepository>
   let findCandidateByIdRepository: MockProxy<IFindCandidateByIdRepository>
+  let findUserVoteRepository: MockProxy<IFindOneUserVoteRepository>
   let addUserVoteRepository: MockProxy<IAddUserVoteRepository>
 
   beforeEach(() => {
     findUserByIdRepository = mock<IFindUserByIdRepository>()
     findCandidateByIdRepository = mock<IFindCandidateByIdRepository>()
+    findUserVoteRepository = mock<IFindOneUserVoteRepository>()
     addUserVoteRepository = mock<IAddUserVoteRepository>()
-    sut = new AddUserVote(findUserByIdRepository, findCandidateByIdRepository, addUserVoteRepository)
+    sut = new AddUserVote(
+      findUserByIdRepository,
+      findCandidateByIdRepository,
+      findUserVoteRepository,
+      addUserVoteRepository,
+    )
 
     findUserByIdRepository.findById.mockResolvedValue({ id: 'any_id', email: 'any_mail' } as User)
     findCandidateByIdRepository.findById.mockResolvedValue({ id: 'any_id', name: 'any_name' } as Candidate)
@@ -61,6 +68,29 @@ describe('AddUserVote', () => {
     await expect(promise).rejects.toThrow(new Error('Candidate not found'))
   })
 
+  it('should call findUserVoteRepository', async () => {
+    await sut.add(validParams)
+
+    expect(findUserVoteRepository.findOne).toBeCalledTimes(1)
+    expect(findUserVoteRepository.findOne).toBeCalledWith({
+      userId: validParams.userId,
+      candidateId: validParams.candidateId,
+    })
+  })
+
+  it('should throw if findUserVoteRepository returns a user vote', async () => {
+    findUserVoteRepository.findOne.mockResolvedValueOnce({
+      id: 'any_id',
+      userId: 'any_user_id',
+      candidateId: 'any_candidate_id',
+      date: new Date(),
+    })
+
+    const promise = sut.add(validParams)
+
+    await expect(promise).rejects.toThrow(new Error('User already voted in this candidate'))
+  })
+
   it('should call addUserVoteRepository', async () => {
     await sut.add(validParams)
 
@@ -71,9 +101,10 @@ describe('AddUserVote', () => {
   it('should return a user vote on success', async () => {
     const mockedUserVote = {
       id: 'any_id',
-      user: { id: 'any_user_id' } as User,
-      candidate: { id: 'any_candidate_id' } as Candidate,
-    } as UserVote
+      userId: 'any_user_id',
+      candidateId: 'any_candidate_id',
+      date: new Date(),
+    }
 
     addUserVoteRepository.add.mockResolvedValueOnce(mockedUserVote)
 
