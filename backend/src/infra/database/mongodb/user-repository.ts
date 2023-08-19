@@ -15,8 +15,15 @@ export class UserRepository implements IAddUserRepository, IFindUserByEmailRepos
   async findByEmail(email: string): Promise<User | null> {
     const usersCollection = MongoHelper.getCollection('users')
     const user = await usersCollection.findOne({ email }, { projection: { _id: 1, name: 1, email: 1, password: 1 } })
-    console.log(user)
-    return user
+
+    if (!user) return null
+
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    }
   }
 
   findById(id: string): Promise<User | null> {
