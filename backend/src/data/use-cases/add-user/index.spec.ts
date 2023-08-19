@@ -67,6 +67,6 @@ describe('AddUser', () => {
 
     const result = await sut.add(validParams)
 
-    expect(result).toEqual({ id: 'any_id', email: '' })
+    expect(result).toEqual(true)
   })
 })
