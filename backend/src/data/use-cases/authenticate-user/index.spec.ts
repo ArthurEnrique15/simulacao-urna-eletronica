@@ -15,6 +15,7 @@ describe('AuthenticateUser', () => {
   let encrypter: MockProxy<IEncrypter>
 
   const userMock = {
+    name: 'any_name',
     email: 'any_email',
     password: 'any_password',
   } as User
@@ -77,6 +78,6 @@ describe('AuthenticateUser', () => {
 
     const result = await sut.authenticate(validParams)
 
-    expect(result).toEqual({ token: 'any_token' })
+    expect(result).toEqual({ token: 'any_token', name: userMock.name })
   })
 })

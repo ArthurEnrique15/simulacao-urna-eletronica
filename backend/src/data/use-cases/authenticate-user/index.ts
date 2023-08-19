@@ -25,6 +25,6 @@ export class AuthenticateUser implements IAuthenticateUser {
 
     const token = await this.encrypter.encrypt({ userId: user.id })
 
-    return { token }
+    return { token, name: user.name }
   }
 }
