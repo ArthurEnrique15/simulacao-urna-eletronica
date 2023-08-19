@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 import { AddUserRepositoryParams, IAddUserRepository } from '@/data/protocols/database/user/add-user'
 import { IFindUserByEmailRepository } from '@/data/protocols/database/user/find-user-by-email'
 import { IFindUserByIdRepository } from '@/data/protocols/database/user/find-user-by-id'
@@ -26,7 +28,20 @@ export class UserRepository implements IAddUserRepository, IFindUserByEmailRepos
     }
   }
 
-  findById(id: string): Promise<User | null> {
-    throw new Error('Method not implemented.')
+  async findById(id: string): Promise<User | null> {
+    const usersCollection = MongoHelper.getCollection('users')
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { _id: 1, name: 1, email: 1, password: 1 } },
+    )
+
+    if (!user) return null
+
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    }
   }
 }
