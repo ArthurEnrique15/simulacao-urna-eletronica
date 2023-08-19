@@ -1,3 +1,4 @@
+import { IDecrypter } from '@/data/protocols/cryptography/decrypter'
 import { IFindCandidateByIdRepository } from '@/data/protocols/database/candidate/find-candidate-by-id'
 import { IFindUserByIdRepository } from '@/data/protocols/database/user/find-user-by-id'
 import { IAddUserVoteRepository } from '@/data/protocols/database/user-vote/add-user-vote'
@@ -6,13 +7,16 @@ import { AddUserVoteDTO, IAddUserVote } from '@/domain/use-cases/add-user-vote'
 
 export class AddUserVote implements IAddUserVote {
   constructor(
+    private readonly decrypter: IDecrypter,
     private readonly findUserByIdRepository: IFindUserByIdRepository,
     private readonly findCandidateByIdRepository: IFindCandidateByIdRepository,
     private readonly findUserVoteRepository: IFindOneUserVoteRepository,
     private readonly addUserVoteRepository: IAddUserVoteRepository,
   ) {}
 
-  async add({ userId, candidateId }: AddUserVoteDTO.Params): Promise<AddUserVoteDTO.Result> {
+  async add({ token, candidateId }: AddUserVoteDTO.Params): Promise<AddUserVoteDTO.Result> {
+    const { userId } = await this.decrypter.decrypt(token)
+
     const userExists = await this.findUserByIdRepository.findById(userId)
 
     if (!userExists) {

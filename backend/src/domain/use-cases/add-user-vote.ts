@@ -1,6 +1,6 @@
 export namespace AddUserVoteDTO {
   export type Params = {
-    userId: string
+    token: string
     candidateId: string
   }
 
