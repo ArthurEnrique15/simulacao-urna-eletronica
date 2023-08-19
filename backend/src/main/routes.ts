@@ -1,5 +1,7 @@
 import { Router } from 'express'
 
-const router = Router()
+export function setupRoutes() {
+  const router = Router()
 
-export { router }
+  return router
+}
