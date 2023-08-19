@@ -6,9 +6,9 @@ export class AddUserController {
   constructor(private readonly addUserUseCase: IAddUser) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const { email, password } = request.body
+    const { name, email, password } = request.body
     try {
-      const user = await this.addUserUseCase.add({ email, password })
+      const user = await this.addUserUseCase.add({ name, email, password })
 
       if (!user) {
         throw new Error('User not created')

@@ -10,7 +10,7 @@ export class AddUser implements IAddUser {
     private readonly addUserRepository: IAddUserRepository,
   ) {}
 
-  async add({ email, password }: AddUserDTO.Params): Promise<AddUserDTO.Result> {
+  async add({ name, email, password }: AddUserDTO.Params): Promise<AddUserDTO.Result> {
     const userAlreadyExists = await this.findUserByEmailRepository.findByEmail(email)
 
     if (userAlreadyExists) {
@@ -19,7 +19,7 @@ export class AddUser implements IAddUser {
 
     const hashedPassword = await this.passwordHasher.hash(password)
 
-    const user = await this.addUserRepository.add({ email, password: hashedPassword })
+    const user = await this.addUserRepository.add({ name, email, password: hashedPassword })
 
     return user
   }

@@ -22,6 +22,7 @@ describe('AddUser', () => {
   })
 
   const validParams: AddUserDTO.Params = {
+    name: 'any_name',
     email: 'any_email@mail.com',
     password: 'any_password',
   }
@@ -55,13 +56,14 @@ describe('AddUser', () => {
 
     expect(addUserRepository.add).toBeCalledTimes(1)
     expect(addUserRepository.add).toBeCalledWith({
+      name: validParams.name,
       email: validParams.email,
       password: 'hashed_password',
     })
   })
 
   it('should return an user on success', async () => {
-    addUserRepository.add.mockResolvedValueOnce({ id: 'any_id', email: '' } as User)
+    addUserRepository.add.mockResolvedValueOnce(true)
 
     const result = await sut.add(validParams)
 

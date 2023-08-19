@@ -1,5 +1,6 @@
 export namespace AddUserDTO {
   export type Params = {
+    name: string
     email: string
     password: string
   }
