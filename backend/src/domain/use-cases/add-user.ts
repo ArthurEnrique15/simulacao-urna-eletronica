@@ -1,12 +1,10 @@
-import { User } from '../models/user'
-
 export namespace AddUserDTO {
   export type Params = {
     email: string
     password: string
   }
 
-  export type Result = User
+  export type Result = boolean
 }
 
 export interface IAddUser {
