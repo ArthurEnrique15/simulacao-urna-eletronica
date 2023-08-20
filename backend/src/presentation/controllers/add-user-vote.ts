@@ -10,8 +10,8 @@ export class AddUserVoteController {
     const { candidateId } = request.body
 
     try {
-      if (!token || !candidateId) {
-        throw new Error('Missing param')
+      if (!token) {
+        throw new Error('Missing token')
       }
 
       const userVote = await this.addUserVoteUseCase.add({ token: token.toString(), candidateId })

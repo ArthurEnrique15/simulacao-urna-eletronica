@@ -16,7 +16,7 @@ export class UserVoteRepository implements IAddUserVoteRepository, IFindUserVote
 
     const userVote = await usersCollection.findOne(
       { userId },
-      { projection: { _id: 1, userId: 1, candidateId: 1, date: 1 } },
+      { projection: { _id: 1, userId: 1, candidateId: 1, isBlank: 1, createdAt: 1 } },
     )
 
     if (!userVote) return null
@@ -25,7 +25,8 @@ export class UserVoteRepository implements IAddUserVoteRepository, IFindUserVote
       id: userVote._id.toString(),
       userId: userVote.userId,
       candidateId: userVote.candidateId,
-      date: userVote.date,
+      isBlank: userVote.isBlank,
+      createdAt: userVote.createdAt,
     }
   }
 }

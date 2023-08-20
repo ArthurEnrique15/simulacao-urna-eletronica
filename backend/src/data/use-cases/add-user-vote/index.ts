@@ -23,10 +23,12 @@ export class AddUserVote implements IAddUserVote {
       throw new Error('User not found')
     }
 
-    const candidateExists = await this.findCandidateByIdRepository.findById(candidateId)
+    if (candidateId) {
+      const candidateExists = await this.findCandidateByIdRepository.findById(candidateId)
 
-    if (!candidateExists) {
-      throw new Error('Candidate not found')
+      if (!candidateExists) {
+        throw new Error('Candidate not found')
+      }
     }
 
     const userAlreadyVoted = await this.findUserVoteByUserRepository.findByUser(userId)
@@ -35,7 +37,12 @@ export class AddUserVote implements IAddUserVote {
       throw new Error('User already voted')
     }
 
-    const userVote = await this.addUserVoteRepository.add({ userId, candidateId })
+    const userVote = await this.addUserVoteRepository.add({
+      userId,
+      candidateId: candidateId || null,
+      isBlank: !candidateId,
+      createdAt: new Date(),
+    })
 
     return userVote
   }

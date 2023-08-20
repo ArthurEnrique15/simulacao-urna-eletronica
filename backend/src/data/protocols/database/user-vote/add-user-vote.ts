@@ -1,6 +1,8 @@
 export type AddUserVoteRepositoryParams = {
   userId: string
-  candidateId: string
+  candidateId: string | null
+  isBlank: boolean
+  createdAt: Date
 }
 
 export interface IAddUserVoteRepository {
