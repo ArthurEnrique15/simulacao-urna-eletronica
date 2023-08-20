@@ -5,16 +5,30 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { useContext } from 'react'
 import { LoggedUserContext } from './contexts/LoggedUserContext'
+import { VotingStatus } from './pages/VotingStatus'
 
 export function Router() {
   const { loggedUser } = useContext(LoggedUserContext)
 
+  const getHomeElement = () => {
+    if (!loggedUser) {
+      return <Navigate to="/login" />
+    }
+
+    if (loggedUser.alreadyVoted) {
+      return <Navigate to="/status" />
+    }
+
+    return <Urn />
+  }
+
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
+        <Route path="/" element={getHomeElement()} />
         <Route
-          path="/"
-          element={!loggedUser ? <Navigate to="/login" /> : <Urn />}
+          path="/status"
+          element={!loggedUser ? <Navigate to="/login" /> : <VotingStatus />}
         />
       </Route>
       <Route
