@@ -21,26 +21,33 @@ export function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const response = await api.post(
-      `${import.meta.env.VITE_SERVER_URL}/login`,
-      { email, password },
-    )
+    try {
+      const response = await api.post(
+        `${import.meta.env.VITE_SERVER_URL}/login`,
+        { email, password },
+      )
 
-    if (response.status !== 201) {
-      return alert('Credenciais inválidas!')
+      console.log(response)
+
+      if (response.status !== 201) {
+        alert('Credenciais inválidas!')
+        return
+      }
+
+      const { data } = response
+
+      login(data)
+
+      alert('Login efetuado com sucesso!')
+
+      if (data.alreadyVoted) {
+        return navigate('/status')
+      }
+
+      navigate('/')
+    } catch (err) {
+      alert('Credenciais inválidas!')
     }
-
-    const { data } = response
-
-    login(data)
-
-    alert('Login efetuado com sucesso!')
-
-    if (data.alreadyVoted) {
-      return navigate('/status')
-    }
-
-    navigate('/')
   }
 
   return (
