@@ -35,7 +35,7 @@ type Candidate = {
 }
 
 export function Urn() {
-  const { loggedUser, logout } = useContext(LoggedUserContext)
+  const { loggedUser, logout, vote } = useContext(LoggedUserContext)
 
   const navigate = useNavigate()
 
@@ -57,7 +57,6 @@ export function Urn() {
       navigate('/')
     }
 
-    console.log(response.data)
     setCandidates(response.data)
   }, [logout, navigate])
 
@@ -110,6 +109,8 @@ export function Urn() {
     if (response.status !== 201) {
       return alert('Erro ao computar voto! Tente novamente.')
     }
+
+    vote()
 
     alert('Voto computado com sucesso!')
     setCurrentNumber('')

@@ -3,12 +3,14 @@ import { ReactNode, createContext, useState } from 'react'
 export type LoggedUser = {
   name: string
   token: string
+  alreadyVoted: boolean
 }
 
 interface LoggedUserContextType {
   loggedUser: LoggedUser | null
   login: (user: LoggedUser) => void
   logout: () => void
+  vote: () => void
 }
 
 interface LoggedUserProviderProps {
@@ -21,7 +23,6 @@ export function LoggedUserProvider({ children }: LoggedUserProviderProps) {
   const [loggedUser, setLoggedUser] = useState<LoggedUser | null>(null)
 
   const login = (user: LoggedUser) => {
-    console.log(user)
     setLoggedUser(user)
   }
 
@@ -29,8 +30,14 @@ export function LoggedUserProvider({ children }: LoggedUserProviderProps) {
     setLoggedUser(null)
   }
 
+  const vote = () => {
+    if (loggedUser && !loggedUser.alreadyVoted) {
+      setLoggedUser({ ...loggedUser, alreadyVoted: true })
+    }
+  }
+
   return (
-    <LoggedUserContext.Provider value={{ loggedUser, login, logout }}>
+    <LoggedUserContext.Provider value={{ loggedUser, login, logout, vote }}>
       {children}
     </LoggedUserContext.Provider>
   )
