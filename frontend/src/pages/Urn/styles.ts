@@ -3,13 +3,14 @@ import styled from 'styled-components'
 export const UrnContainer = styled.div`
   min-height: 34rem;
   width: 100%;
-  /* margin: 2rem auto; */
 
   display: flex;
   flex-direction: column;
   justify-content: center;
 
-  gap: 3.5rem;
+  gap: 1rem;
+
+  margin-bottom: 2rem;
 `
 
 export const TitleContainer = styled.div`
@@ -32,8 +33,8 @@ export const TitleContainer = styled.div`
   }
 
   img {
-    width: 10rem;
-    height: 10rem;
+    width: 7rem;
+    height: 7rem;
   }
 `
 

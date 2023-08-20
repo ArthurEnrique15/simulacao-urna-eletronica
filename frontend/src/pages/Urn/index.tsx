@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import useSound from 'use-sound'
 import brasilCoatOfArms from '../../assets/brasao_republica.png'
 import {
@@ -21,34 +21,49 @@ import {
 } from './styles'
 import finishVoteSfx from '../../assets/finish_vote.mp3'
 import buttonClickSfx from '../../assets/button_click.mp3'
+import { LoggedUserContext } from '../../contexts/LoggedUserContext'
+import { api } from '../../lib/axios'
+import { useNavigate } from 'react-router-dom'
+
+type Candidate = {
+  id: string
+  name: string
+  party: string
+  viceCandidate: string
+  number: number
+  createdAt: Date
+}
 
 export function Urn() {
+  const { loggedUser, logout } = useContext(LoggedUserContext)
+
+  const navigate = useNavigate()
+
   const [currentNumber, setCurrentNumber] = useState('')
   const [isBlankVote, setIsBlankVote] = useState(false)
+  const [candidates, setCandidates] = useState<Candidate[]>([])
 
   const [playFinishVoteSfx] = useSound(finishVoteSfx)
   const [playButtonClickSfx] = useSound(buttonClickSfx)
 
-  const candidates = [
-    {
-      name: 'Lula',
-      party: 'PT',
-      number: '13',
-      vice: 'Geraldo Alckmin',
-    },
-    {
-      name: 'Léo Péricles',
-      party: 'UP',
-      number: '80',
-      vice: 'Samara Martins',
-    },
-    {
-      name: 'Sofia Manzano',
-      party: 'PCB',
-      number: '20',
-      vice: 'Antonio Alves',
-    },
-  ]
+  const fetchCandidates = useCallback(async () => {
+    const response = await api.get(
+      `${import.meta.env.VITE_SERVER_URL}/candidates`,
+    )
+
+    if (response.status !== 200) {
+      alert('Erro ao buscar candidatos! Por favor, faça login novamente.')
+      logout()
+      navigate('/')
+    }
+
+    console.log(response.data)
+    setCandidates(response.data)
+  }, [logout, navigate])
+
+  useEffect(() => {
+    fetchCandidates()
+  }, [fetchCandidates])
 
   function handleNumberClick(event: React.MouseEvent<HTMLButtonElement>) {
     const { value } = event.currentTarget
@@ -72,13 +87,30 @@ export function Urn() {
     }
   }
 
-  function handleVote() {
+  const handleVote = async () => {
     if (currentNumber.length !== 2 && !isBlankVote) {
       alert('Para confirmar é necessário digitar 2 números ou votar em BRANCO')
       return
     }
 
+    const candidate = candidates.find(
+      (candidate) => candidate.number.toString() === currentNumber,
+    )
+
     playFinishVoteSfx()
+
+    const response = await api.post(
+      `${import.meta.env.VITE_SERVER_URL}/vote`,
+      { candidateId: candidate?.id },
+      { headers: { token: loggedUser?.token } },
+    )
+
+    console.log({ candidate, response })
+
+    if (response.status !== 201) {
+      return alert('Erro ao computar voto! Tente novamente.')
+    }
+
     alert('Voto computado com sucesso!')
     setCurrentNumber('')
     setIsBlankVote(false)
@@ -106,11 +138,11 @@ export function Urn() {
 
     if (currentNumber.length === 1) {
       candidate = candidates.find(
-        (candidate) => candidate.number[0] === currentNumber,
+        (candidate) => candidate.number.toString()[0] === currentNumber,
       )
     } else {
       candidate = candidates.find(
-        (candidate) => candidate.number === currentNumber,
+        (candidate) => candidate.number.toString() === currentNumber,
       )
     }
 
@@ -127,7 +159,7 @@ export function Urn() {
           </span>
           <span>
             <strong>Vice: </strong>
-            {candidate.vice}
+            {candidate.viceCandidate}
           </span>
         </>
       )
