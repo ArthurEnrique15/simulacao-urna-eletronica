@@ -94,19 +94,25 @@ export function Urn() {
       return
     }
 
-    const candidate = candidates.find(
-      (candidate) => candidate.number.toString() === currentNumber,
-    )
-
     playFinishVoteSfx()
+
+    const getCandidateId = () => {
+      if (isBlankVote) {
+        return null
+      }
+
+      const candidate = candidates.find(
+        (candidate) => candidate.number.toString() === currentNumber,
+      )
+
+      return candidate?.id || null
+    }
 
     const response = await api.post(
       `${import.meta.env.VITE_SERVER_URL}/vote`,
-      { candidateId: candidate?.id },
+      { candidateId: getCandidateId() },
       { headers: { token: loggedUser?.token } },
     )
-
-    console.log({ candidate, response })
 
     if (response.status !== 201) {
       return alert('Erro ao computar voto! Tente novamente.')
