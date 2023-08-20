@@ -1,5 +1,6 @@
 import 'express-async-errors'
 
+import cors from 'cors'
 import express, { NextFunction, Request, Response } from 'express'
 
 import MongoHelper from '../infra/database/mongodb/helper'
@@ -9,6 +10,7 @@ export async function setupApp() {
   await MongoHelper.connect()
   const app = express()
 
+  app.use(cors())
   app.use(express.json())
   app.use(setupRoutes())
 
