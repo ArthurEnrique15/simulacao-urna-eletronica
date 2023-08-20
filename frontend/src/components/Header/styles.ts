@@ -6,9 +6,8 @@ export const HeaderContainer = styled.header`
   justify-content: flex-end;
 
   width: 100%;
-  height: 6.5rem;
 
-  padding: 2rem 0;
+  padding: 1rem 0;
 `
 
 export const HeaderButtonsContainer = styled.div`
