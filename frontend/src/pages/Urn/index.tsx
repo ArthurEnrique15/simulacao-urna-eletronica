@@ -69,6 +69,8 @@ export function Urn() {
 
     playButtonClickSfx()
 
+    setIsBlankVote(false)
+
     if (currentNumber.length === 0) {
       setCurrentNumber(value)
     } else if (currentNumber.length === 1) {
@@ -120,6 +122,7 @@ export function Urn() {
   function handleBlankVote() {
     playButtonClickSfx()
     setIsBlankVote(true)
+    setCurrentNumber('')
   }
 
   function getVoteInfo() {
