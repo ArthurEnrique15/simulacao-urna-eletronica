@@ -25,6 +25,7 @@ import { LoggedUserContext } from '../../contexts/LoggedUserContext'
 import { api } from '../../lib/axios'
 import { useNavigate } from 'react-router-dom'
 import { CandidatesContext } from '../../contexts/CandidatesContext'
+import { CandidatesList } from './CandidatesList'
 
 export function Urn() {
   const { loggedUser, logout, vote } = useContext(LoggedUserContext)
@@ -255,6 +256,8 @@ export function Urn() {
           </ActionButtonsContainer>
         </ButtonsContainer>
       </BoxesContainer>
+
+      <CandidatesList />
     </UrnContainer>
   )
 }
