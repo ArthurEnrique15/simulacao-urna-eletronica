@@ -30,11 +30,15 @@ export function Login() {
       return alert('Credenciais inválidas!')
     }
 
-    console.log(response.data)
+    const { data } = response
 
-    login(response.data)
+    login(data)
 
     alert('Login efetuado com sucesso!')
+
+    if (data.alreadyVoted) {
+      return navigate('/status')
+    }
 
     navigate('/')
   }
