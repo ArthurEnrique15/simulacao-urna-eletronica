@@ -4,7 +4,7 @@ export namespace AuthenticateUserDTO {
     password: string
   }
 
-  export type Result = { token: string; name: string }
+  export type Result = { token: string; name: string; alreadyVoted: boolean }
 }
 
 export interface IAuthenticateUser {
