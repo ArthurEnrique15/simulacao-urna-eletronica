@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import useSound from 'use-sound'
 import brasilCoatOfArms from '../../assets/brasao_republica.png'
 import {
@@ -24,45 +24,27 @@ import buttonClickSfx from '../../assets/button_click.mp3'
 import { LoggedUserContext } from '../../contexts/LoggedUserContext'
 import { api } from '../../lib/axios'
 import { useNavigate } from 'react-router-dom'
-
-type Candidate = {
-  id: string
-  name: string
-  party: string
-  viceCandidate: string
-  number: number
-  createdAt: Date
-}
+import { CandidatesContext } from '../../contexts/CandidatesContext'
 
 export function Urn() {
   const { loggedUser, logout, vote } = useContext(LoggedUserContext)
+  const { candidates } = useContext(CandidatesContext)
 
   const navigate = useNavigate()
 
   const [currentNumber, setCurrentNumber] = useState('')
   const [isBlankVote, setIsBlankVote] = useState(false)
-  const [candidates, setCandidates] = useState<Candidate[]>([])
 
   const [playFinishVoteSfx] = useSound(finishVoteSfx)
   const [playButtonClickSfx] = useSound(buttonClickSfx)
 
-  const fetchCandidates = useCallback(async () => {
-    const response = await api.get(
-      `${import.meta.env.VITE_SERVER_URL}/candidates`,
-    )
-
-    if (response.status !== 200) {
+  useEffect(() => {
+    if (!candidates) {
       alert('Erro ao buscar candidatos! Por favor, faça login novamente.')
       logout()
       navigate('/')
     }
-
-    setCandidates(response.data)
-  }, [logout, navigate])
-
-  useEffect(() => {
-    fetchCandidates()
-  }, [fetchCandidates])
+  }, [candidates, logout, navigate])
 
   function handleNumberClick(event: React.MouseEvent<HTMLButtonElement>) {
     const { value } = event.currentTarget

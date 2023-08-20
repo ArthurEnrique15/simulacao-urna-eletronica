@@ -5,6 +5,7 @@ import { GlobalStyle } from './styles/global'
 import { BrowserRouter } from 'react-router-dom'
 import { Router } from './Router'
 import { LoggedUserProvider } from './contexts/LoggedUserContext'
+import { CandidatesProvider } from './contexts/CandidatesContext'
 
 export function App() {
   localStorage.clear()
@@ -12,7 +13,9 @@ export function App() {
     <ThemeProvider theme={defaultTheme}>
       <BrowserRouter>
         <LoggedUserProvider>
-          <Router />
+          <CandidatesProvider>
+            <Router />
+          </CandidatesProvider>
         </LoggedUserProvider>
       </BrowserRouter>
 
