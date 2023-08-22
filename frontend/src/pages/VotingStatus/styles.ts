@@ -4,5 +4,5 @@ export const VotingStatusContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60%;
+  width: 50rem;
 `
