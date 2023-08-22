@@ -3,7 +3,9 @@ import { mock, MockProxy } from 'jest-mock-extended'
 import { IEncrypter } from '@/data/protocols/cryptography/encrypter'
 import { IHashComparer } from '@/data/protocols/cryptography/hash-comparer'
 import { IFindUserByEmailRepository } from '@/data/protocols/database/user/find-user-by-email'
+import { IFindUserVoteByUserRepository } from '@/data/protocols/database/user-vote/find-by-user'
 import { User } from '@/domain/models/user'
+import { UserVote } from '@/domain/models/user-vote'
 import { AuthenticateUserDTO } from '@/domain/use-cases/authenticate-user'
 
 import { AuthenticateUser } from '.'
@@ -13,6 +15,7 @@ describe('AuthenticateUser', () => {
   let findUserByEmailRepository: MockProxy<IFindUserByEmailRepository>
   let hashComparer: MockProxy<IHashComparer>
   let encrypter: MockProxy<IEncrypter>
+  let findUserVoteByUserRepository: MockProxy<IFindUserVoteByUserRepository>
 
   const userMock = {
     name: 'any_name',
@@ -24,8 +27,9 @@ describe('AuthenticateUser', () => {
     findUserByEmailRepository = mock<IFindUserByEmailRepository>()
     hashComparer = mock<IHashComparer>()
     encrypter = mock<IEncrypter>()
+    findUserVoteByUserRepository = mock<IFindUserVoteByUserRepository>()
 
-    sut = new AuthenticateUser(findUserByEmailRepository, hashComparer, encrypter)
+    sut = new AuthenticateUser(findUserByEmailRepository, hashComparer, encrypter, findUserVoteByUserRepository)
 
     findUserByEmailRepository.findByEmail.mockResolvedValue(userMock)
     hashComparer.compare.mockResolvedValue(true)
@@ -73,11 +77,27 @@ describe('AuthenticateUser', () => {
     expect(encrypter.encrypt).toHaveBeenCalledWith({ userId: userMock.id })
   })
 
-  it('should return a token on success', async () => {
+  it('should call findUserVoteByUserRepository', async () => {
+    await sut.authenticate(validParams)
+
+    expect(findUserVoteByUserRepository.findByUser).toHaveBeenCalledTimes(1)
+    expect(findUserVoteByUserRepository.findByUser).toHaveBeenCalledWith(userMock.id)
+  })
+
+  it('should return correct values on success', async () => {
     encrypter.encrypt.mockResolvedValueOnce('any_token')
 
     const result = await sut.authenticate(validParams)
 
-    expect(result).toEqual({ token: 'any_token', name: userMock.name })
+    expect(result).toEqual({ token: 'any_token', name: userMock.name, alreadyVoted: false })
+  })
+
+  it('should return correct values when user already voted', async () => {
+    encrypter.encrypt.mockResolvedValueOnce('any_token')
+    findUserVoteByUserRepository.findByUser.mockResolvedValueOnce({} as UserVote)
+
+    const result = await sut.authenticate(validParams)
+
+    expect(result).toEqual({ token: 'any_token', name: userMock.name, alreadyVoted: true })
   })
 })

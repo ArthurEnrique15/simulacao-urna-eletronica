@@ -11,6 +11,9 @@ import { AddUserVoteDTO } from '@/domain/use-cases/add-user-vote'
 
 import { AddUserVote } from '.'
 
+// @ts-expect-error: disabled for testing purposes
+jest.useFakeTimers('modern').setSystemTime(new Date())
+
 describe('AddUserVote', () => {
   let sut: AddUserVote
   let decrypter: MockProxy<IDecrypter>
@@ -59,7 +62,7 @@ describe('AddUserVote', () => {
     expect(findUserByIdRepository.findById).toBeCalledWith(validDecrypterResponse.userId)
   })
 
-  it('should throw if findUserByIdRepository returns null', async () => {
+  it('should throw if findUserByIdRepository returns nul', async () => {
     findUserByIdRepository.findById.mockResolvedValueOnce(null)
 
     const promise = sut.add(validParams)
@@ -68,6 +71,13 @@ describe('AddUserVote', () => {
   })
 
   it('should call findCandidateByIdRepository', async () => {
+    await sut.add(validParams)
+
+    expect(findCandidateByIdRepository.findById).toBeCalledTimes(1)
+    expect(findCandidateByIdRepository.findById).toBeCalledWith(validParams.candidateId)
+  })
+
+  it('should not call findCandidateByIdRepository if ', async () => {
     await sut.add(validParams)
 
     expect(findCandidateByIdRepository.findById).toBeCalledTimes(1)
@@ -94,7 +104,8 @@ describe('AddUserVote', () => {
       id: 'any_id',
       userId: 'any_user_id',
       candidateId: 'any_candidate_id',
-      date: new Date(),
+      isBlank: false,
+      createdAt: new Date(),
     })
 
     const promise = sut.add(validParams)
@@ -102,13 +113,27 @@ describe('AddUserVote', () => {
     await expect(promise).rejects.toThrow(new Error('User already voted'))
   })
 
-  it('should call addUserVoteRepository', async () => {
+  it('should call addUserVoteRepository with correct values', async () => {
     await sut.add(validParams)
 
     expect(addUserVoteRepository.add).toBeCalledTimes(1)
     expect(addUserVoteRepository.add).toBeCalledWith({
       userId: validDecrypterResponse.userId,
       candidateId: validParams.candidateId,
+      isBlank: false,
+      createdAt: new Date(),
+    })
+  })
+
+  it('should call addUserVoteRepository with correct values when candidateId is undefined', async () => {
+    await sut.add({ token: validParams.token })
+
+    expect(addUserVoteRepository.add).toBeCalledTimes(1)
+    expect(addUserVoteRepository.add).toBeCalledWith({
+      userId: validDecrypterResponse.userId,
+      candidateId: null,
+      isBlank: true,
+      createdAt: new Date(),
     })
   })
 
