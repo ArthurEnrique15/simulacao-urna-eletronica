@@ -8,6 +8,7 @@ import { setupRoutes } from './routes'
 
 export async function setupApp() {
   await MongoHelper.connect()
+  await MongoHelper.insertCandidates()
   const app = express()
 
   app.use(cors())
