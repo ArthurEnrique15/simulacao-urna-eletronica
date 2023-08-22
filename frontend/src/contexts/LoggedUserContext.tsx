@@ -28,6 +28,7 @@ export function LoggedUserProvider({ children }: LoggedUserProviderProps) {
 
   const logout = () => {
     setLoggedUser(null)
+    alert('Você foi deslogado com sucesso!')
   }
 
   const vote = () => {
