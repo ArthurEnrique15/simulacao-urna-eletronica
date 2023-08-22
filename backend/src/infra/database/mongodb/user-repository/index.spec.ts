@@ -11,7 +11,7 @@ jest.mock('mongodb', () => {
 jest.mock('../helper')
 
 describe('UserRepository', () => {
-  let userRepository: UserRepository
+  let sut: UserRepository
 
   const mockedUser = {
     _id: new ObjectId('some-id'),
@@ -30,7 +30,7 @@ describe('UserRepository', () => {
   }
 
   beforeEach(() => {
-    userRepository = new UserRepository()
+    sut = new UserRepository()
     MongoHelper.getCollection = jest.fn().mockReturnValue(mockCollection)
   })
 
@@ -42,12 +42,12 @@ describe('UserRepository', () => {
     }
 
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await userRepository.add(validAddParams)
+      await sut.add(validAddParams)
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('users')
     })
 
     it('should return true if user was inserted', async () => {
-      const result = await userRepository.add(validAddParams)
+      const result = await sut.add(validAddParams)
       expect(result).toEqual(true)
     })
 
@@ -57,7 +57,7 @@ describe('UserRepository', () => {
       }
 
       MongoHelper.getCollection = jest.fn().mockReturnValueOnce(mockCollectionWithNullInsertOne)
-      const result = await userRepository.add(validAddParams)
+      const result = await sut.add(validAddParams)
       expect(result).toEqual(false)
     })
   })
@@ -66,12 +66,12 @@ describe('UserRepository', () => {
     const validEmailParam = 'any-email'
 
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await userRepository.findByEmail(validEmailParam)
+      await sut.findByEmail(validEmailParam)
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('users')
     })
 
     it('should call usersCollection.findOne with correct values', async () => {
-      await userRepository.findByEmail(validEmailParam)
+      await sut.findByEmail(validEmailParam)
       expect(mockCollection.findOne).toHaveBeenCalledTimes(1)
       expect(mockCollection.findOne).toHaveBeenCalledWith(
         { email: validEmailParam },
@@ -86,13 +86,13 @@ describe('UserRepository', () => {
 
       MongoHelper.getCollection = jest.fn().mockReturnValue(mockCollectionWithNullFindOne)
 
-      const response = await userRepository.findByEmail('some-id')
+      const response = await sut.findByEmail('some-id')
 
       expect(response).toEqual(null)
     })
 
     it('should return correct user on success', async () => {
-      const response = await userRepository.findByEmail('some-id')
+      const response = await sut.findByEmail('some-id')
       expect(response).toEqual({
         id: mockedUser._id.toString(),
         name: mockedUser.name,
@@ -106,12 +106,12 @@ describe('UserRepository', () => {
     const validId = 'any-id'
 
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await userRepository.findById(validId)
+      await sut.findById(validId)
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('users')
     })
 
     it('should call usersCollection.findOne with correct values', async () => {
-      await userRepository.findById(validId)
+      await sut.findById(validId)
       expect(mockCollection.findOne).toHaveBeenCalledTimes(1)
       expect(mockCollection.findOne).toHaveBeenCalledWith(
         { _id: new ObjectId(validId) },
@@ -126,13 +126,13 @@ describe('UserRepository', () => {
 
       MongoHelper.getCollection = jest.fn().mockReturnValue(mockCollectionWithNullFindOne)
 
-      const response = await userRepository.findById('some-id')
+      const response = await sut.findById('some-id')
 
       expect(response).toEqual(null)
     })
 
     it('should return correct user on success', async () => {
-      const response = await userRepository.findById('some-id')
+      const response = await sut.findById('some-id')
       expect(response).toEqual({
         id: mockedUser._id.toString(),
         name: mockedUser.name,

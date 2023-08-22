@@ -11,7 +11,7 @@ jest.mock('mongodb', () => {
 jest.mock('../helper')
 
 describe('CandidateRepository', () => {
-  let candidateRepository: CandidateRepository
+  let sut: CandidateRepository
 
   const mockedCandidate = {
     _id: new ObjectId('some-id'),
@@ -32,18 +32,18 @@ describe('CandidateRepository', () => {
   }
 
   beforeEach(() => {
-    candidateRepository = new CandidateRepository()
+    sut = new CandidateRepository()
     MongoHelper.getCollection = jest.fn().mockReturnValue(mockCollection)
   })
 
   describe('findById', () => {
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await candidateRepository.findById('some-id')
+      await sut.findById('some-id')
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('candidates')
     })
 
     it('should call candidatesCollection.findOne with correct values', async () => {
-      await candidateRepository.findById('some-id')
+      await sut.findById('some-id')
       expect(mockCollection.findOne).toHaveBeenCalledTimes(1)
       expect(mockCollection.findOne).toHaveBeenCalledWith(
         { _id: new ObjectId('some-id') },
@@ -58,13 +58,13 @@ describe('CandidateRepository', () => {
 
       MongoHelper.getCollection = jest.fn().mockReturnValue(mockCollectionWithNullFindOne)
 
-      const response = await candidateRepository.findById('some-id')
+      const response = await sut.findById('some-id')
 
       expect(response).toEqual(null)
     })
 
     it('should return correct candidate on success', async () => {
-      const response = await candidateRepository.findById('some-id')
+      const response = await sut.findById('some-id')
       expect(response).toEqual({
         id: mockedCandidate._id.toString(),
         name: mockedCandidate.name,
@@ -78,12 +78,12 @@ describe('CandidateRepository', () => {
 
   describe('findAll', () => {
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await candidateRepository.findAll()
+      await sut.findAll()
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('candidates')
     })
 
     it('should call candidatesCollection.find with correct values', async () => {
-      await candidateRepository.findAll()
+      await sut.findAll()
 
       expect(mockCollection.find).toHaveBeenCalledTimes(1)
       expect(mockCollection.find).toHaveBeenCalledWith(
@@ -93,14 +93,14 @@ describe('CandidateRepository', () => {
     })
 
     it('should call candidatesCollection.find.toArray', async () => {
-      await candidateRepository.findAll()
+      await sut.findAll()
 
       expect(mockFindResponse.toArray).toHaveBeenCalledTimes(1)
       expect(mockFindResponse.toArray).toHaveBeenCalledWith()
     })
 
     it('should return correct values on success', async () => {
-      const result = await candidateRepository.findAll()
+      const result = await sut.findAll()
 
       expect(result).toEqual([
         {

@@ -11,7 +11,7 @@ jest.mock('mongodb', () => {
 jest.mock('../helper')
 
 describe('UserVoteRepository', () => {
-  let userVoteRepository: UserVoteRepository
+  let sut: UserVoteRepository
 
   const mockedUserVote = {
     _id: new ObjectId('some-id'),
@@ -36,7 +36,7 @@ describe('UserVoteRepository', () => {
   }
 
   beforeEach(() => {
-    userVoteRepository = new UserVoteRepository()
+    sut = new UserVoteRepository()
     MongoHelper.getCollection = jest.fn().mockReturnValue(mockCollection)
   })
 
@@ -49,12 +49,12 @@ describe('UserVoteRepository', () => {
     }
 
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await userVoteRepository.add(validAddParams)
+      await sut.add(validAddParams)
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('users_votes')
     })
 
     it('should return true if user vote was inserted', async () => {
-      const result = await userVoteRepository.add(validAddParams)
+      const result = await sut.add(validAddParams)
       expect(result).toEqual(true)
     })
 
@@ -64,7 +64,7 @@ describe('UserVoteRepository', () => {
       }
 
       MongoHelper.getCollection = jest.fn().mockReturnValueOnce(mockCollectionWithNullInsertOne)
-      const result = await userVoteRepository.add(validAddParams)
+      const result = await sut.add(validAddParams)
       expect(result).toEqual(false)
     })
   })
@@ -73,12 +73,12 @@ describe('UserVoteRepository', () => {
     const validUserIdParam = 'any_user_id'
 
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await userVoteRepository.findByUser(validUserIdParam)
+      await sut.findByUser(validUserIdParam)
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('users_votes')
     })
 
     it('should call usersVotesCollection.findOne with correct values', async () => {
-      await userVoteRepository.findByUser(validUserIdParam)
+      await sut.findByUser(validUserIdParam)
       expect(mockCollection.findOne).toHaveBeenCalledTimes(1)
       expect(mockCollection.findOne).toHaveBeenCalledWith(
         { userId: validUserIdParam },
@@ -93,13 +93,13 @@ describe('UserVoteRepository', () => {
 
       MongoHelper.getCollection = jest.fn().mockReturnValue(mockCollectionWithNullFindOne)
 
-      const response = await userVoteRepository.findByUser('some-id')
+      const response = await sut.findByUser('some-id')
 
       expect(response).toEqual(null)
     })
 
     it('should return correct user on success', async () => {
-      const response = await userVoteRepository.findByUser('some-id')
+      const response = await sut.findByUser('some-id')
       expect(response).toEqual({
         id: mockedUserVote._id.toString(),
         userId: mockedUserVote.userId,
@@ -112,12 +112,12 @@ describe('UserVoteRepository', () => {
 
   describe('findAll', () => {
     it('should call MongoHelper.getConnection with correct value', async () => {
-      await userVoteRepository.findAll()
+      await sut.findAll()
       expect(MongoHelper.getCollection).toHaveBeenCalledWith('users_votes')
     })
 
     it('should call usersVotesCollection.find with correct values', async () => {
-      await userVoteRepository.findAll()
+      await sut.findAll()
 
       expect(mockCollection.find).toHaveBeenCalledTimes(1)
       expect(mockCollection.find).toHaveBeenCalledWith(
@@ -127,14 +127,14 @@ describe('UserVoteRepository', () => {
     })
 
     it('should call usersVotesCollection.find.toArray', async () => {
-      await userVoteRepository.findAll()
+      await sut.findAll()
 
       expect(mockFindResponse.toArray).toHaveBeenCalledTimes(1)
       expect(mockFindResponse.toArray).toHaveBeenCalledWith()
     })
 
     it('should return correct values on success', async () => {
-      const result = await userVoteRepository.findAll()
+      const result = await sut.findAll()
 
       expect(result).toEqual([
         {
