@@ -1,13 +1,9 @@
 import { AddUserVoteRepositoryParams, IAddUserVoteRepository } from '@/data/protocols/database/user-vote/add-user-vote'
 import { IFindAllUserVotesRepository } from '@/data/protocols/database/user-vote/find-all'
 import { IFindUserVoteByUserRepository } from '@/data/protocols/database/user-vote/find-by-user'
-import {
-  GetUserVotesPerCandidateResponse,
-  IGetUserVotesPerCandidateRepository,
-} from '@/data/protocols/database/user-vote/get-total-votes-per-candidate'
 import { UserVote } from '@/domain/models/user-vote'
 
-import MongoHelper from './helper'
+import MongoHelper from '../helper'
 
 export class UserVoteRepository
   implements IAddUserVoteRepository, IFindUserVoteByUserRepository, IFindAllUserVotesRepository

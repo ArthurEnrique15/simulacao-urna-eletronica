@@ -5,7 +5,7 @@ import { IFindUserByEmailRepository } from '@/data/protocols/database/user/find-
 import { IFindUserByIdRepository } from '@/data/protocols/database/user/find-user-by-id'
 import { User } from '@/domain/models/user'
 
-import MongoHelper from './helper'
+import MongoHelper from '../helper'
 
 export class UserRepository implements IAddUserRepository, IFindUserByEmailRepository, IFindUserByIdRepository {
   async add(params: AddUserRepositoryParams): Promise<boolean> {

@@ -4,7 +4,7 @@ import { IFindAllCandidatesRepository } from '@/data/protocols/database/candidat
 import { IFindCandidateByIdRepository } from '@/data/protocols/database/candidate/find-candidate-by-id'
 import { Candidate } from '@/domain/models/candidate'
 
-import MongoHelper from './helper'
+import MongoHelper from '../helper'
 
 export class CandidateRepository implements IFindCandidateByIdRepository, IFindAllCandidatesRepository {
   async findById(id: string): Promise<Candidate | null> {
@@ -29,6 +29,7 @@ export class CandidateRepository implements IFindCandidateByIdRepository, IFindA
 
   async findAll(): Promise<Candidate[]> {
     const candidatesCollection = MongoHelper.getCollection('candidates')
+
     const candidates = await candidatesCollection
       .find({}, { projection: { _id: 1, name: 1, party: 1, viceCandidate: 1, number: 1, createdAt: 1 } })
       .toArray()
